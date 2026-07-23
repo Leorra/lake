@@ -4,6 +4,7 @@
 #include <cmath>
 #include <complex>
 #include <cstddef>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -55,10 +56,18 @@ namespace lake_logic {
 			return true;
 		}
 
-		[[nodiscard]] bool isCompletePath() const noexcept {
+		[[nodiscard]] bool isComplete() const noexcept {
 			if (!isValid()) { return false; }
 			return path_.front()->getType() == Type::START
 				&& path_.back()->getType() == Type::GOAL;
+		}
+
+		void print() const noexcept {
+			std::cout << "Path: lenght=" << getColorStr(Color::RED) << size() << getColorStr(Color::RESET)
+				<< ", start=" << getTypeStr(front()->getType()) << getColorStr(Color::RESET)
+				<< ", end=" << getTypeStr(back()->getType()) << getColorStr(Color::RESET)
+				<< ", isValid: " << isValid()
+				<< ", isComplete: " << isComplete() << "\n";
 		}
 	};
 
@@ -70,20 +79,6 @@ namespace lake_logic {
 #include "lake.hpp" // Lake needed for getComplexPath's body below
 
 namespace lake_logic {
-
-	// Reflects value back into [lo, hi] like a ball bouncing off both walls,
-	// instead of clamping flat against the boundary. A hard clamp would pin
-	// the curve flat against the edge for as long as the underlying (unclamped)
-	// wave stays out of range, producing a long straight run followed by an
-	// abrupt jump once it re-enters — this keeps the curve continuous instead.
-	[[nodiscard]] inline double reflect(double value, const double lo, const double hi) noexcept {
-		const double range = hi - lo;
-		if (range <= 0.0) { return lo; }
-		double v = std::fmod(value - lo, 2.0 * range);
-		if (v < 0.0) { v += 2.0 * range; }
-		if (v > range) { v = 2.0 * range - v; }
-		return lo + v;
-	}
 
 	// Walks a 4-connected (no diagonal) grid path from (from_x, from_y) toward
 	// (to_x, to_y), appending every intermediate cell to path. At each step,
@@ -167,10 +162,10 @@ namespace lake_logic {
 			const bool is_last = (i == num_samples - 1);
 			const long long target_x = is_last
 				? static_cast<long long>(goal_x)
-				: static_cast<long long>(std::llround(reflect(p.real(), 0.0, static_cast<double>(max_x))));
+				: std::clamp(std::llround(p.real()), 0LL, max_x);
 			const long long target_y = is_last
 				? static_cast<long long>(goal_y)
-				: static_cast<long long>(std::llround(reflect(p.imag(), 0.0, static_cast<double>(max_y))));
+				: std::clamp(std::llround(p.imag()), 0LL, max_y);
 
 			walkSegment(lake, path, curr_x, curr_y, target_x, target_y);
 			curr_x = target_x;

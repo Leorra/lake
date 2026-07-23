@@ -187,7 +187,10 @@ namespace lake_logic {
 			row.reserve(width_ * 8);
 			for (std::size_t x = 0; x < width_; ++x) {
 				const Cell& cell = getCell(x, y);
-				if (cell.getType() != Type::START && cell.getType() != Type::GOAL && path.isOnPath(&cell)) {
+				if (cell.getType() != Type::START
+					&& cell.getType() != Type::GOAL
+					&& cell.getType() != Type::HOLE
+					&& path.isOnPath(&cell)) {
 					row.append(getTypeStr(Type::PATH));
 					continue;
 				}
