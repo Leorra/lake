@@ -11,13 +11,17 @@ namespace lake_logic {
 
 	class Agent {
 	private:
-		std::size_t x_ { 0 };
-		std::size_t y_ { 0 };
 
 		Lake& lake_;
+		Cell* current_cell_ { nullptr };
 
 		Cell* start_cell_ { nullptr };
 		Cell* goal_cell_  { nullptr };
+
+		// greecks
+		double epsilon_ { 0.1 };
+		double gamma_ { 0.9999 };
+		double step_reward_ { -0.01 };
 
 	public:
 		Agent(Lake& lake) : lake_(lake),
@@ -26,6 +30,7 @@ namespace lake_logic {
 			if (start_cell_ == nullptr || goal_cell_ == nullptr) {
 				throw std::invalid_argument("Agent(): Start or goal cell is nullptr");
 			}
+			current_cell_ = start_cell_;
 		}
 	};
 

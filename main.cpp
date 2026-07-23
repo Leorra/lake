@@ -2,10 +2,12 @@
 #include <exception>
 #include <iostream>
 
+#include "agent.hpp"
 #include "lake.hpp"
+#include "path.hpp"
 
-static std::size_t width  = 80;
-static std::size_t height = 60;
+static std::size_t width  = 20;
+static std::size_t height = 20;
 
 using namespace lake_logic;
 
@@ -13,15 +15,14 @@ int main() {
 	try {
 		Lake lake(width, height);
 
-		Path empty_path; // no path constructed yet; corners are Type::EMPTY, so no relocation needed
-
-		Path path = getComplexPath(lake, 45.0, 2.0);
-
+		Path path = getComplexPath(lake, 2.0, 2.0);
 		lake.generateHoles(0.25, path); // holes are excluded from cells already on the path
+
+		Agent agent(lake);
 
 		lake.print();
 		lake.print(path);
-	} catch (const std::exception& e) {
+	} catch (const std::exception& e) { 
 		std::cerr << e.what() << "\n";
 	}
 
