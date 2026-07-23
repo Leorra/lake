@@ -82,6 +82,7 @@ namespace lake_logic {
 		[[nodiscard]] std::size_t getY() const noexcept { return y_; }
 
 		[[nodiscard]] Type getType() const noexcept { return type_; }
+		[[nodiscard]] bool isTerminal() const noexcept { return type_ == Type::HOLE || type_ == Type::GOAL; }
 		void setType(Type type) noexcept { type_ = type; }
 		[[nodiscard]] std::size_t getVisits() const noexcept { return visits_; }
 

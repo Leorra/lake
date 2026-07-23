@@ -39,18 +39,13 @@ namespace lake_logic {
 
 		[[nodiscard]] Path getEpisode(std::size_t max_num) {
 			current_cell_ = start_cell_;
-			Path path;
-
+			Path path; path.addCell(current_cell_);
 			for (std::size_t n = 0; n < max_num; ++n) {
-				path.addCell(current_cell_);
+				if (current_cell_->isTerminal()) { break; }
 				auto dir_opt = current_cell_->getBestDirection(epsilon_, rng_);
 				if (!dir_opt.has_value()) { break; }
 				current_cell_ = current_cell_->getNext(dir_opt.value());
-				Type cell_type = current_cell_->getType();
-				if (cell_type == Type::HOLE || cell_type == Type::GOAL) {
-					path.addCell(current_cell_);
-					break;
-				}
+				path.addCell(current_cell_);
 			}
 
 			return path;
