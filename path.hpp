@@ -66,8 +66,8 @@ namespace lake_logic {
 			std::cout << "Path: lenght: " << getColorStr(Color::RED) << size() << getColorStr(Color::RESET)
 				<< ", start: " << getTypeStr(front()->getType()) << getColorStr(Color::RESET)
 				<< ", end: " << getTypeStr(back()->getType()) << getColorStr(Color::RESET)
-				<< ", isValid: " << isValid()
-				<< ", isComplete: " << isComplete() << "\n";
+				<< ", isValid: " << (isValid() ? "Yes" : "No")
+				<< ", isComplete: " << (isComplete() ? "Yes" : "No") << "\n";
 		}
 	};
 
