@@ -4,7 +4,6 @@
 #include <cmath>
 #include <complex>
 #include <cstddef>
-#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -72,6 +71,49 @@ namespace lake_logic {
 
 namespace lake_logic {
 
+	// Reflects value back into [lo, hi] like a ball bouncing off both walls,
+	// instead of clamping flat against the boundary. A hard clamp would pin
+	// the curve flat against the edge for as long as the underlying (unclamped)
+	// wave stays out of range, producing a long straight run followed by an
+	// abrupt jump once it re-enters — this keeps the curve continuous instead.
+	[[nodiscard]] inline double reflect(double value, const double lo, const double hi) noexcept {
+		const double range = hi - lo;
+		if (range <= 0.0) { return lo; }
+		double v = std::fmod(value - lo, 2.0 * range);
+		if (v < 0.0) { v += 2.0 * range; }
+		if (v > range) { v = 2.0 * range - v; }
+		return lo + v;
+	}
+
+	// Walks a 4-connected (no diagonal) grid path from (from_x, from_y) toward
+	// (to_x, to_y), appending every intermediate cell to path. At each step,
+	// moves along whichever axis currently has the larger remaining distance —
+	// this lets the path both increase and decrease in either coordinate,
+	// which is what a true sine-wave deviation (not just a monotonic
+	// approach) requires.
+	inline void walkSegment(
+		const Lake& lake,
+		Path& path,
+		long long from_x, long long from_y,
+		const long long to_x, const long long to_y) {
+		while (from_x != to_x || from_y != to_y) {
+			const long long dx = to_x - from_x;
+			const long long dy = to_y - from_y;
+			if (std::abs(dx) >= std::abs(dy) && dx != 0) {
+				from_x += (dx > 0) ? 1 : -1;
+			} else if (dy != 0) {
+				from_y += (dy > 0) ? 1 : -1;
+			} else {
+				from_x += (dx > 0) ? 1 : -1;
+			}
+			// const_cast: Lake is taken as const& here, but Path stores mutable
+			// Cell* so callers (e.g. MC updates) can write Q-values through it
+			// regardless of the Lake reference's own constness.
+			path.addCell(const_cast<Cell*>(
+				&lake.getCell(static_cast<std::size_t>(from_x), static_cast<std::size_t>(from_y))));
+		}
+	}
+
 	inline Path getComplexPath(const Lake& lake, const double amplitude, const double cycles) {
 		Path path;
 
@@ -89,55 +131,50 @@ namespace lake_logic {
 		using Comp = std::complex<double>;
 		const Comp start(static_cast<double>(start_x), static_cast<double>(start_y));
 		const Comp goal(static_cast<double>(goal_x), static_cast<double>(goal_y));
-		Comp dir = goal - start;
-		double len = std::abs(dir);
+		const Comp dir = goal - start;
+		const double len = std::abs(dir);
 
-		if (len < 1e-9) { path.addCell(start_cell); return path; }
+		path.addCell(start_cell);
+		if (len < 1e-9) {
+			return path;
+		}
 
 		const Comp dir_norm = dir / len;
-		const Comp dir_conj = std::conj(dir_norm);
-		std::size_t curr_x = start_x;
-		std::size_t curr_y = start_y;
-		path.addCell(start_cell);
-
-		const int step_x = (goal_x > start_x) ? 1 : ((goal_x < start_x) ? -1 : 0);
-		const int step_y = (goal_y > start_y) ? 1 : ((goal_y < start_y) ? -1 : 0);
+		// Perpendicular unit vector: rotate dir_norm by +90 degrees.
+		const Comp perp(-dir_norm.imag(), dir_norm.real());
 
 		constexpr double pi = 3.14159265358979323846;
 		const double omega = (2.0 * pi * cycles) / len;
 
-		auto compute_wave_error = [&](const double cell_x, const double cell_y) noexcept {
-			Comp delta(cell_x - start.real(), cell_y - start.imag());
-			Comp local = delta * dir_conj;
-			double t = local.real();
-			double n = local.imag();
-			double target_offset = amplitude * std::sin(omega * t);
-			return std::abs(n - target_offset);
-		};
+		const long long max_x = static_cast<long long>(lake.getWidth()) - 1;
+		const long long max_y = static_cast<long long>(lake.getHeight()) - 1;
 
-		while (curr_x != goal_x || curr_y != goal_y) {
-			double err_x = std::numeric_limits<double>::max();
-			double err_y = std::numeric_limits<double>::max();
+		// Sample the parametric curve start + t*dir_norm + amplitude*sin(omega*t)*perp
+		// roughly once per unit of travel along the direction axis, then connect
+		// consecutive samples with a 4-connected segment. This is what allows the
+		// path to actually curve away from and back toward the straight line,
+		// rather than only ever approaching the goal monotonically.
+		const std::size_t num_samples = static_cast<std::size_t>(std::ceil(len)) + 1;
 
-			if (curr_x != goal_x) {
-				err_x = compute_wave_error(
-					static_cast<double>(curr_x + step_x),
-					static_cast<double>(curr_y)
-				);
-			}
-			if (curr_y != goal_y) {
-				err_y = compute_wave_error(
-					static_cast<double>(curr_x),
-					static_cast<double>(curr_y + step_y)
-				);
-			}
+		long long curr_x = static_cast<long long>(start_x);
+		long long curr_y = static_cast<long long>(start_y);
 
-			if (err_x < err_y) { curr_x += step_x; } else { curr_y += step_y; }
+		for (std::size_t i = 1; i < num_samples; ++i) {
+			const double t = std::min(static_cast<double>(i), len);
+			const double offset = amplitude * std::sin(omega * t);
+			const Comp p = start + dir_norm * t + perp * offset;
 
-			// const_cast: Lake is taken as const& here, but Path stores mutable
-			// Cell* so callers (e.g. MC updates) can write Q-values through it
-			// regardless of the Lake reference's own constness.
-			path.addCell(const_cast<Cell*>(&lake.getCell(curr_x, curr_y)));
+			const bool is_last = (i == num_samples - 1);
+			const long long target_x = is_last
+				? static_cast<long long>(goal_x)
+				: static_cast<long long>(std::llround(reflect(p.real(), 0.0, static_cast<double>(max_x))));
+			const long long target_y = is_last
+				? static_cast<long long>(goal_y)
+				: static_cast<long long>(std::llround(reflect(p.imag(), 0.0, static_cast<double>(max_y))));
+
+			walkSegment(lake, path, curr_x, curr_y, target_x, target_y);
+			curr_x = target_x;
+			curr_y = target_y;
 		}
 
 		return path;
