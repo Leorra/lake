@@ -92,10 +92,7 @@ namespace lake_logic {
 		Comp dir = goal - start;
 		double len = std::abs(dir);
 
-		if (len < 1e-9) {
-			path.addCell(start_cell);
-			return path;
-		}
+		if (len < 1e-9) { path.addCell(start_cell); return path; }
 
 		const Comp dir_norm = dir / len;
 		const Comp dir_conj = std::conj(dir_norm);

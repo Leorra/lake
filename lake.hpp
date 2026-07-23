@@ -174,8 +174,8 @@ namespace lake_logic {
 	inline void Lake::print(const Path& path) const {
 		std::cout << "Lake: " << getColorStr(Color::GREEN) << "[" << width_ << "x" << height_ << "]"
 			<< getColorStr(Color::RESET) << ", Holes: " << getColorStr(Color::BLUE) << total_holes_
-			<< getColorStr(Color::RESET) << " (" << std::fixed << std::setprecision(2)
-			<< getColorStr(Color::BLUE) << hole_probability_ << getColorStr(Color::RESET) << ")\n";
+			<< getColorStr(Color::RESET) << " [" << std::fixed << std::setprecision(2)
+			<< getColorStr(Color::BLUE) << hole_probability_ << getColorStr(Color::RESET) << "]\n";
 
 		std::size_t holes_count = 0;
 		for (std::size_t y = 0; y < height_; ++y) {
