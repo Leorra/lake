@@ -104,7 +104,7 @@ namespace lake_logic {
 			std::string row;
 			row.reserve(width_ * 8);
 			for (std::size_t x = 0; x < width_; ++x) {
-				row.append(getTypeStr(getCell(x, y).getType()));
+				row.append(getTypeStr(getCell(x, y).getType())); row.append(" ");
 			}
 			std::cout << row << getColorStr(Color::RESET) << "\n";
 		}
@@ -191,11 +191,11 @@ namespace lake_logic {
 					&& cell.getType() != Type::GOAL
 					&& cell.getType() != Type::HOLE
 					&& path.isOnPath(&cell)) {
-					row.append(getTypeStr(Type::PATH));
+					row.append(getTypeStr(Type::PATH)); row.append(" ");
 					continue;
 				}
 				if (cell.getType() == Type::HOLE) { ++holes_count; }
-				row.append(getTypeStr(cell.getType()));
+				row.append(getTypeStr(cell.getType())); row.append(" ");
 			}
 			std::cout << row << getColorStr(Color::RESET) << "\n";
 		}

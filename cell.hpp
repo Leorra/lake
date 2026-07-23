@@ -45,11 +45,11 @@ namespace lake_logic {
 
 	[[nodiscard]] inline std::string getTypeStr(Type type) noexcept {
 		switch (type) {
-			case Type::EMPTY: return getColorStr(Color::WHITE) + ". ";
-			case Type::HOLE:  return getColorStr(Color::BLUE) + "H ";
-			case Type::START: return getColorStr(Color::GREEN) + "S ";
-			case Type::GOAL:  return getColorStr(Color::YELLOW) + "G ";
-			case Type::PATH:  return getColorStr(Color::RED) + "* ";
+			case Type::EMPTY: return getColorStr(Color::WHITE) + ".";
+			case Type::HOLE:  return getColorStr(Color::BLUE) + "H";
+			case Type::START: return getColorStr(Color::GREEN) + "S";
+			case Type::GOAL:  return getColorStr(Color::YELLOW) + "G";
+			case Type::PATH:  return getColorStr(Color::RED) + "*";
 		}
 		return getColorStr(Color::RESET) + "  ";
 	}
