@@ -33,8 +33,7 @@ namespace lake_logic {
 	[[nodiscard]] inline std::string getColorStr(Color color) noexcept {
 		switch (color) {
 			case Color::WHITE:  return "\033[37m";
-				// case Color::BLUE:   return "\033[34m";
-			case Color::BLUE:   return "\033[1;34m";
+			case Color::BLUE:   return "\033[34m";
 			case Color::GREEN:  return "\033[32m";
 			case Color::RED:    return "\033[31m";
 			case Color::YELLOW: return "\033[33m";

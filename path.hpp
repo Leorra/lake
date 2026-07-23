@@ -63,7 +63,7 @@ namespace lake_logic {
 		}
 
 		void print() const noexcept {
-			std::cout << "Path: lenght=" << getColorStr(Color::RED) << size() << getColorStr(Color::RESET)
+			std::cout << "Path: lenght: " << getColorStr(Color::RED) << size() << getColorStr(Color::RESET)
 				<< ", start: " << getTypeStr(front()->getType()) << getColorStr(Color::RESET)
 				<< ", end: " << getTypeStr(back()->getType()) << getColorStr(Color::RESET)
 				<< ", isValid: " << isValid()
