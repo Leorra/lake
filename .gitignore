@@ -1,0 +1,13 @@
+# Build directories / binaries
+laje/
+x64/
+git.bat
+lake.vcxproj.filters
+lake.vcxproj.user
+lake.vcxproj
+lake.sln
+lake.slnx
+
+
+# IDE and OS files
+.vs/
