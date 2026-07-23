@@ -4,7 +4,7 @@
 
 #include "lake.hpp"
 
-static std::size_t width  = 100;
+static std::size_t width  = 80;
 static std::size_t height = 60;
 
 using namespace lake_logic;
@@ -17,7 +17,7 @@ int main() {
 
 		Path path = getComplexPath(lake, 45.0, 2.0);
 
-		lake.generateHoles(0.5, path); // holes are excluded from cells already on the path
+		lake.generateHoles(0.25, path); // holes are excluded from cells already on the path
 
 		lake.print();
 		lake.print(path);
