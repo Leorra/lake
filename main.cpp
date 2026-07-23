@@ -15,11 +15,7 @@ int main() {
 	try {
 		Lake lake(width, height);
 
-		Path path; // no path constructed yet; corners are Type::EMPTY, so no relocation needed
-		lake.setStartCell(0, 0, path);
-		lake.setGoalCell(width - 1, height - 1, path);
-
-		path = getComplexPath(lake, 5.0, -1.0);
+		Path path = getComplexPath(lake, 5.0, -1.0);
 
 		lake.generateHoles(0.25, path); // holes are excluded from cells already on the path
 

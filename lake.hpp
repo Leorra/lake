@@ -24,8 +24,8 @@ namespace lake_logic {
 		std::size_t total_holes_ { 0 };
 		std::mt19937 rng_;
 		Cell* start_cell_ { nullptr };
-		Cell* goal_cell_  { nullptr };
-		
+		Cell* goal_cell_ { nullptr };
+
 		Cell* getRandomEmptyCell(const Path& path); // defined below, after Path is complete
 
 	public:
@@ -60,7 +60,7 @@ namespace lake_logic {
 		width_(width), height_(height),
 		rng_(std::random_device {}()) {
 		cells_.reserve(width_ * height_);
-		
+
 		for (std::size_t y = 0; y < height_; ++y) {
 			for (std::size_t x = 0; x < width_; ++x) {
 				cells_.emplace_back(x, y);
@@ -78,6 +78,9 @@ namespace lake_logic {
 				}
 			}
 		}
+
+		if (start_cell_ == nullptr) { start_cell_ = &cells_.front(); start_cell_->setType(Type::START); }
+		if (goal_cell_ == nullptr) { goal_cell_ = &cells_.back(); goal_cell_->setType(Type::GOAL); }
 	}
 
 	inline Cell& Lake::getCell(const std::size_t x, const std::size_t y) {
@@ -182,7 +185,7 @@ namespace lake_logic {
 			row.reserve(width_ * 8);
 			for (std::size_t x = 0; x < width_; ++x) {
 				const Cell& cell = getCell(x, y);
-				if (cell.getType() != Type::START	&& cell.getType() != Type::GOAL && path.isOnPath(&cell)) {
+				if (cell.getType() != Type::START && cell.getType() != Type::GOAL && path.isOnPath(&cell)) {
 					row.append(getTypeStr(Type::PATH));
 					continue;
 				}
