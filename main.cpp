@@ -2,6 +2,7 @@
 #include <exception>
 #include <iostream>
 
+#include "agent.hpp"
 #include "lake.hpp"
 #include "path.hpp"
 

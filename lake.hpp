@@ -25,8 +25,7 @@ namespace lake_logic {
 		std::mt19937 rng_;
 		Cell* start_ { nullptr };
 		Cell* goal_ { nullptr };
-		std::vector<Cell*> candidates_buffer_;
-
+		
 		Cell* getRandomEmptyCell(const Path& path); // defined below, after Path is complete
 
 	public:
@@ -61,8 +60,7 @@ namespace lake_logic {
 		width_(width), height_(height),
 		rng_(std::random_device {}()) {
 		cells_.reserve(width_ * height_);
-		candidates_buffer_.reserve(width_ * height_);
-
+		
 		for (std::size_t y = 0; y < height_; ++y) {
 			for (std::size_t x = 0; x < width_; ++x) {
 				cells_.emplace_back(x, y);
@@ -116,7 +114,8 @@ namespace lake_logic {
 namespace lake_logic {
 
 	inline Cell* Lake::getRandomEmptyCell(const Path& path) {
-		candidates_buffer_.clear();
+		std::vector<Cell*> candidates_buffer_;
+		candidates_buffer_.reserve(width_ * height_);
 		for (auto& cell : cells_) {
 			if (cell.getType() == Type::EMPTY && !path.isOnPath(&cell)) {
 				candidates_buffer_.push_back(&cell);
