@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include <cstddef>
+#include <stdexcept>
 
+#include "cell.hpp"
 #include "lake.hpp"
 #include "path.hpp"
 
@@ -14,9 +16,17 @@ namespace lake_logic {
 
 		Lake& lake_;
 
-	public:
-		Agent(Lake& lake) : lake_(lake) {}
+		Cell* start_cell_ { nullptr };
+		Cell* goal_cell_  { nullptr };
 
+	public:
+		Agent(Lake& lake) : lake_(lake),
+			start_cell_(lake.getStart()),
+			goal_cell_(lake.getGoal()) {
+			if (start_cell_ == nullptr || goal_cell_ == nullptr) {
+				throw std::invalid_argument("Agent(): Start or goal cell is nullptr");
+			}
+		}
 	};
 
 } // namespace lake_logic

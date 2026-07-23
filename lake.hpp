@@ -23,8 +23,8 @@ namespace lake_logic {
 		double hole_probability_ { 0.0 };
 		std::size_t total_holes_ { 0 };
 		std::mt19937 rng_;
-		Cell* start_ { nullptr };
-		Cell* goal_ { nullptr };
+		Cell* start_cell_ { nullptr };
+		Cell* goal_cell_  { nullptr };
 		
 		Cell* getRandomEmptyCell(const Path& path); // defined below, after Path is complete
 
@@ -43,8 +43,8 @@ namespace lake_logic {
 		[[nodiscard]] std::size_t getHeight() const noexcept { return height_; }
 		[[nodiscard]] std::size_t size() const noexcept { return cells_.size(); }
 
-		[[nodiscard]] Cell* getStart() const noexcept { return start_; }
-		[[nodiscard]] Cell* getGoal() const noexcept { return goal_; }
+		[[nodiscard]] Cell* getStart() const noexcept { return start_cell_; }
+		[[nodiscard]] Cell* getGoal() const noexcept { return goal_cell_; }
 
 		// path is the already-existing route (may be a default-constructed, empty
 		// Path) whose cells must be excluded when relocating a displaced occupant.
@@ -82,7 +82,7 @@ namespace lake_logic {
 
 	inline Cell& Lake::getCell(const std::size_t x, const std::size_t y) {
 		if (x >= width_ || y >= height_) {
-			throw std::out_of_range("[EXCEPTION: getCell()] Cell index out of bounds: x="
+			throw std::out_of_range("getCell(): Cell index out of bounds: x="
 				+ std::to_string(x) + ", y=" + std::to_string(y));
 		}
 		return cells_[y * width_ + x];
@@ -90,7 +90,7 @@ namespace lake_logic {
 
 	inline const Cell& Lake::getCell(const std::size_t x, const std::size_t y) const {
 		if (x >= width_ || y >= height_) {
-			throw std::out_of_range("[EXCEPTION: getCell()] Cell index out of bounds: x="
+			throw std::out_of_range("getCell(): Cell index out of bounds: x="
 				+ std::to_string(x) + ", y=" + std::to_string(y));
 		}
 		return cells_[y * width_ + x];
@@ -136,7 +136,7 @@ namespace lake_logic {
 			empty_cell->setType(cell.getType());
 		}
 		cell.setType(Type::START);
-		start_ = &cell;
+		start_cell_ = &cell;
 	}
 
 	inline void Lake::setGoalCell(const std::size_t x, const std::size_t y, const Path& path) {
@@ -149,7 +149,7 @@ namespace lake_logic {
 			empty_cell->setType(cell.getType());
 		}
 		cell.setType(Type::GOAL);
-		goal_ = &cell;
+		goal_cell_ = &cell;
 	}
 
 	inline void Lake::generateHoles(const double hole_probability, const Path& path) {

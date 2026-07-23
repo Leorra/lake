@@ -51,7 +51,7 @@ namespace lake_logic {
 			case Type::GOAL:  return getColorStr(Color::YELLOW) + "G ";
 			case Type::PATH:  return getColorStr(Color::RED) + "* ";
 		}
-		return getColorStr(Color::RESET) + "  "; // unreachable given exhaustive switch above
+		return getColorStr(Color::RESET) + "  ";
 	}
 
 	class Cell;  // Forward declaration
