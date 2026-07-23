@@ -130,6 +130,7 @@ namespace lake_logic {
 	}
 
 	inline void Lake::setStartCell(const std::size_t x, const std::size_t y, const Path& path) {
+		if (start_cell_) { start_cell_->setType(Type::EMPTY); start_cell_ = nullptr; }
 		Cell& cell = getCell(x, y);
 		if (cell.getType() != Type::EMPTY) {
 			Cell* const empty_cell = getRandomEmptyCell(path);
@@ -143,6 +144,7 @@ namespace lake_logic {
 	}
 
 	inline void Lake::setGoalCell(const std::size_t x, const std::size_t y, const Path& path) {
+		if (goal_cell_) { goal_cell_->setType(Type::EMPTY); goal_cell_ = nullptr; }
 		Cell& cell = getCell(x, y);
 		if (cell.getType() != Type::EMPTY) {
 			Cell* const empty_cell = getRandomEmptyCell(path);
