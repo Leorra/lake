@@ -6,7 +6,7 @@
 #include "lake.hpp"
 #include "path.hpp"
 
-static std::size_t width  = 10;
+static std::size_t width  = 20;
 static std::size_t height = 10;
 
 using namespace lake_logic;
