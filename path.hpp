@@ -58,8 +58,10 @@ namespace lake_logic {
 			std::cout << "Path: length: " << getColorStr(Color::RED) << size() << getColorStr(Color::RESET)
 				<< ", start: " << getTypeStr(front()->getType()) << getColorStr(Color::RESET)
 				<< ", end: " << getTypeStr(back()->getType()) << getColorStr(Color::RESET)
-				<< ", isValid: " << (isValid() ? "Yes" : "No")
-				<< ", isComplete: " << (isComplete() ? "Yes" : "No") << "\n";
+				<< ", isValid: " << (isValid() ? getColorStr(Color::GREEN) + "Yes" + getColorStr(Color::RESET) :
+					getColorStr(Color::RED) + "No" + getColorStr(Color::RESET))
+				<< ", isComplete: " << (isComplete() ? getColorStr(Color::GREEN) + "Yes" + getColorStr(Color::RESET)
+ 					: getColorStr(Color::RED) + "No" + getColorStr(Color::RESET)) << "\n";
 
 			std::size_t n = 0;
 			for (auto& cell : path_) { std::cout << ++n << ". "; cell->print(); std::cout << "\n"; }
