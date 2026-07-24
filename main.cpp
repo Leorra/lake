@@ -19,7 +19,12 @@ int main() {
 		lake.generateHoles(0.1, complex_path); // holes are excluded from cells already on the path
 
 		Agent agent(lake);
-		Path path = agent.getEpisode(width * height);
+
+		Path path;
+		while (true) {
+			path = agent.getEpisode(width * height);
+			if (path.isComplete()) { break; }
+		}
 
 		lake.print(path); path.print();
 
