@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <limits>
 #include <optional>
@@ -159,6 +160,11 @@ namespace lake_logic {
 
 			std::uniform_int_distribution<std::size_t> tieBreak(0, n - 1);
 			return ties[tieBreak(rng)];
+		}
+
+		void print() const noexcept {
+			std::cout << getColorStr(Color::RESET) << "[" << x_ << ", " << y_ << "] "
+				<< getTypeStr(type_) << getColorStr(Color::RESET);
 		}
 	};
 

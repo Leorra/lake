@@ -68,6 +68,8 @@ namespace lake_logic {
 				<< ", end: " << getTypeStr(back()->getType()) << getColorStr(Color::RESET)
 				<< ", isValid: " << (isValid() ? "Yes" : "No")
 				<< ", isComplete: " << (isComplete() ? "Yes" : "No") << "\n";
+
+			for (auto& cell : path_) { cell->print(); std::cout << "\n"; }
 		}
 	};
 
