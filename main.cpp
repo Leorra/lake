@@ -26,7 +26,7 @@ int main() {
 		path.print();
 
 		std::cout << "Agent's pos: ";
-		agent.getCurretPos()->print(); std::cout << "\n";
+		agent.getCurrentPos()->print(); std::cout << "\n";
 
 	} catch (const std::exception& e) { 
 		std::cerr << e.what() << "\n";

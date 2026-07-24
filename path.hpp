@@ -38,20 +38,12 @@ namespace lake_logic {
 			if (cell == nullptr) { return false; }
 			return std::find(path_.begin(), path_.end(), cell) != path_.end();
 		}
-
-		[[nodiscard]] static bool isAdjacent(const Cell* from, const Cell* to) noexcept {
-			if (from == nullptr || to == nullptr) { return false; }
-			for (std::size_t i = 0; i < kDirectionCount; ++i) {
-				if (from->getNext(static_cast<Direction>(i)) == to) { return true; }
-			}
-			return false;
-		}
-
+				
 		[[nodiscard]] bool isValid() const noexcept {
 			if (path_.empty() || path_.front() == nullptr) { return false; }
 			for (std::size_t i = 1; i < path_.size(); ++i) {
 				if (path_[i] == nullptr) { return false; }
-				if (!isAdjacent(path_[i - 1], path_[i])) { return false; }
+				if (path_[i - 1]->isAdjacent(path_[i]) == Direction::ERROR) { return false; }
 			}
 			return true;
 		}

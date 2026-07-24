@@ -12,13 +12,13 @@
 
 namespace lake_logic {
 
-	enum class Direction : std::size_t { LEFT, UP, RIGHT, DOWN, COUNT };
+	enum class Direction : std::size_t { LEFT, UP, RIGHT, DOWN, ERROR };
 	enum class Type : std::size_t { EMPTY, HOLE, START, GOAL, PATH };
 
 	enum class Color : std::size_t { WHITE, BLUE, GREEN, RED, YELLOW, RESET };
 
 	inline constexpr double kMinusInfinity = -std::numeric_limits<double>::infinity();
-	inline constexpr std::size_t kDirectionCount = static_cast<std::size_t>(Direction::COUNT);
+	inline constexpr std::size_t kDirectionCount = static_cast<std::size_t>(Direction::ERROR);
 
 	[[nodiscard]] constexpr double getReward(Type type) noexcept {
 		switch (type) {
@@ -86,6 +86,15 @@ namespace lake_logic {
 		[[nodiscard]] bool isTerminal() const noexcept { return type_ == Type::HOLE || type_ == Type::GOAL; }
 		void setType(Type type) noexcept { type_ = type; }
 		[[nodiscard]] std::size_t getVisits() const noexcept { return visits_; }
+		void incrementVisits() noexcept { ++visits_; }
+
+		[[nodiscard]] Direction isAdjacent(const Cell* to) const noexcept {
+			if (to == nullptr) { return Direction::ERROR; }
+			for (std::size_t i = 0; i < kDirectionCount; ++i) {
+				if (getNext(static_cast<Direction>(i)) == to) { return static_cast<Direction>(i); }
+			}
+			return Direction::ERROR;
+		}
 
 		[[nodiscard]] double getQ(Direction dir) const noexcept {
 			const auto& link = links_[static_cast<std::size_t>(dir)];
@@ -115,8 +124,6 @@ namespace lake_logic {
 		[[nodiscard]] Cell* getNext(Direction dir) const noexcept {
 			return links_[static_cast<std::size_t>(dir)].next_;
 		}
-
-		void incrementVisits() noexcept { ++visits_; }
 
 		[[nodiscard]] std::optional<Direction> getBestDirection(double epsilon, std::mt19937& rng) const {
 			std::size_t num_available = 0;
