@@ -16,13 +16,17 @@ int main() {
 		Lake lake(width, height);
 
 		Path complex_path = getComplexPath(lake, 2.0, 2.0);
-		lake.generateHoles(0.0, complex_path); // holes are excluded from cells already on the path
+		lake.generateHoles(0.1, complex_path); // holes are excluded from cells already on the path
 
 		Agent agent(lake);
-		Path path = agent.getEpisode(1024);
+		Path path = agent.getEpisode(10);
+
 
 		lake.print(path);
 		path.print();
+
+		std::cout << "Agent's pos: ";
+		agent.getCurretPos()->print(); std::cout << "\n";
 
 	} catch (const std::exception& e) { 
 		std::cerr << e.what() << "\n";

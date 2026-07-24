@@ -69,7 +69,8 @@ namespace lake_logic {
 				<< ", isValid: " << (isValid() ? "Yes" : "No")
 				<< ", isComplete: " << (isComplete() ? "Yes" : "No") << "\n";
 
-			for (auto& cell : path_) { cell->print(); std::cout << "\n"; }
+			std::size_t n = 0;
+			for (auto& cell : path_) { std::cout << ++n << ". "; cell->print(); std::cout << "\n"; }
 		}
 	};
 

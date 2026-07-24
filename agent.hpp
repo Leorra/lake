@@ -37,6 +37,8 @@ namespace lake_logic {
 			current_cell_ = start_cell_;
 		}
 
+		[[nodiscard]] Cell* getCurretPos() const noexcept { return current_cell_; }
+
 		[[nodiscard]] Path getEpisode(std::size_t max_num) {
 			current_cell_ = start_cell_;
 			Path path;
@@ -53,6 +55,7 @@ namespace lake_logic {
 				}
 			}
 
+			current_cell_ = path.back();
 			return path;
 		}
 	};
