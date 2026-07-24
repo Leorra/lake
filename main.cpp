@@ -21,9 +21,8 @@ int main() {
 		Agent agent(lake);
 
 		Path path;
-		while (true) {
+		while (!path.isComplete()) {
 			path = agent.getEpisode(width * height);
-			if (path.isComplete()) { break; }
 		}
 
 		lake.print(path); path.print();
