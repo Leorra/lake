@@ -6,8 +6,8 @@
 #include "lake.hpp"
 #include "path.hpp"
 
-static std::size_t width  = 5;
-static std::size_t height = 5;
+static std::size_t width  = 10;
+static std::size_t height = 10;
 
 using namespace lake_logic;
 
@@ -19,14 +19,11 @@ int main() {
 		lake.generateHoles(0.1, complex_path); // holes are excluded from cells already on the path
 
 		Agent agent(lake);
-		Path path = agent.getEpisode(10);
+		Path path = agent.getEpisode(width * height);
 
+		lake.print(path); path.print();
 
-		lake.print(path);
-		path.print();
-
-		std::cout << "Agent's pos: ";
-		agent.getCurrentPos()->print(); std::cout << "\n";
+		std::cout << "Agent's pos: "; agent.getCurrentPos()->print(); std::cout << "\n";
 
 	} catch (const std::exception& e) { 
 		std::cerr << e.what() << "\n";

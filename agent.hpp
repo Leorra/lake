@@ -14,14 +14,14 @@ namespace lake_logic {
 	private:
 		Lake& lake_;
 
-		Cell* current_cell_ { nullptr };
-
 		Cell* start_cell_ { nullptr };
 		Cell* goal_cell_ { nullptr };
 
+		Cell* current_cell_ { nullptr };
+
 		std::mt19937 rng_;
 
-		// greeks
+		// Greeks
 		double epsilon_ { 0.1 };
 		double gamma_ { 0.9999 };
 		double step_reward_ { -0.01 };
